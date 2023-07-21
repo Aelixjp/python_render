@@ -1,5 +1,9 @@
+import os
 import json
+
 from pygame import Vector2, Vector3, Rect
+
+shapes_base_path = os.path.join(os.getcwd(), "public/modules/Shapes")
 
 def printArr(arr, indentation = 4):
     print(json.dumps(arr, indent = indentation))
@@ -22,6 +26,25 @@ def getMatrixCols(mat) -> int:
     cols = False if not mat else False if type(mat[0]) is not list else len(mat[0])
     
     return cols
+
+def loadJSON(name, path = False):
+    global shapes_base_path
+
+    f = ""
+
+    if(not path):
+        f = open(os.path.realpath(f"{shapes_base_path}/{name}.json"))
+    else:
+        f = open(os.path.realpath(f"{path}/{name}.json"))
+
+    # returns JSON object as
+    # a dictionary
+    data = json.load(f)
+
+    # Closing file
+    f.close()
+
+    return data
 
 #Solo servira para matrices, debe tener minimo un array dentro ([[1, 2, 3]]), arrays planos no son validos ([1, 2, 3])
 def mat_mult(mat1, mat2):
@@ -64,43 +87,5 @@ def mat_mult(mat1, mat2):
             for y in range(cols_mat1):
                 newMat[x][y] = mat1[x][y]
                 newMat[x][y] *= mat2
-
-        return newMat
-
-def mat_multa(a, b):
-
-    colsA = len(a[0])
-    rowsA = len(a)
-
-    if not isinstance(b, int):
-        colsB = len(b[0])
-        rowsB = len(b)
-
-        if colsA != rowsB:
-            print("Columns of A must match rows of B")
-            return None
-
-        result = []
-
-        for j in range(rowsA):
-            result[j] = []
-
-            for i in range(colsB):
-                sum = 0
-                
-                for n in range(colsA):
-                    sum += a[j][n] * b[n][i]
-
-                result[j][i] = sum
-
-        return result
-
-    else:
-        newMat = [[0] * colsA for row in range(rowsA)]
-
-        for x in range(rowsA):
-            for y in range(colsA):
-                newMat[x][y] = a[x][y]
-                newMat[x][y] *= b
 
         return newMat
